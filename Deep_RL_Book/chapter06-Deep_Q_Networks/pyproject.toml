@@ -2,7 +2,6 @@
 name = "dqn-pong"
 version = "0.1.0"
 description = "Deep Q-Network for Pong game using PyTorch and Gymnasium"
-readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "gymnasium>=0.28.0",
@@ -20,8 +19,4 @@ dev = [
     "black>=23.0.0",
     "ruff>=0.1.0",
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
