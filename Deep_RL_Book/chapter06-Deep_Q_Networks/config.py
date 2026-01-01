@@ -58,7 +58,11 @@ class DQNConfig:
         
         # Generate tensorboard comment if not provided
         if self.tensorboard_comment is None:
-            self.tensorboard_comment = f"-{self.env_name}-local" if self.max_frames or self.max_time_minutes else f"-{self.env_name}"
+            if self.max_frames or self.max_time_minutes:
+                suffix = "test" if self.max_time_minutes else "local"
+                self.tensorboard_comment = f"-{self.env_name}-{suffix}"
+            else:
+                self.tensorboard_comment = f"-{self.env_name}"
 
 
 # Configuration presets
@@ -75,7 +79,7 @@ def get_local_config() -> DQNConfig:
 
 
 def get_cloud_config() -> DQNConfig:
-    """Configuration optimized for cloud GPU training"""
+    """Configuration optimized for cloud GPU training (full training, no time limit)"""
     return DQNConfig(
         replay_size=50000,
         replay_start_size=10000,
@@ -87,12 +91,29 @@ def get_cloud_config() -> DQNConfig:
     )
 
 
+def get_cloud_test_config() -> DQNConfig:
+    """Configuration for cloud GPU testing (full cloud params but with time limit)"""
+    return DQNConfig(
+        replay_size=50000,
+        replay_start_size=10000,
+        batch_size=32,
+        epsilon_decay_last_frame=150000,
+        max_frames=None,
+        max_time_minutes=30,  # 30 minutes test run on cloud
+        device="cuda",
+    )
+
+
 def get_config(mode: str = "local") -> DQNConfig:
     """
     Get configuration preset.
     
     Args:
-        mode: "local" for M1 Pro testing, "cloud" for GPU training, or "custom" for manual config
+        mode: 
+            - "local" for M1 Pro testing (small params, 15 min limit)
+            - "cloud" for full GPU training (no time limit)
+            - "cloud_test" for cloud GPU testing (full params, 30 min limit)
+            - "custom" for manual config
         
     Returns:
         DQNConfig instance
@@ -101,6 +122,8 @@ def get_config(mode: str = "local") -> DQNConfig:
         return get_local_config()
     elif mode == "cloud":
         return get_cloud_config()
+    elif mode == "cloud_test":
+        return get_cloud_test_config()
     else:
         # Return default config (can be customized)
         return DQNConfig()

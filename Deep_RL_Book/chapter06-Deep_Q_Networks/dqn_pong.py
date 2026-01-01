@@ -144,8 +144,8 @@ def calc_loss(batch: tt.List[Experience], net: dqn_model.DQN, tgt_net: dqn_model
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DQN Pong Training")
-    parser.add_argument("--mode", default="local", choices=["local", "cloud", "custom"],
-                        help="Configuration mode: 'local' for M1 Pro testing, 'cloud' for GPU training, 'custom' for manual")
+    parser.add_argument("--mode", default="local", choices=["local", "cloud", "cloud_test", "custom"],
+                        help="Configuration mode: 'local' for M1 Pro testing, 'cloud' for full GPU training, 'cloud_test' for cloud GPU test run (30min), 'custom' for manual")
     parser.add_argument("--dev", default=None, 
                         help="Device name (overrides config: cpu, cuda, mps). If not set, uses config default")
     parser.add_argument("--env", default=None,
